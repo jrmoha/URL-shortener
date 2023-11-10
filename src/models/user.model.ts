@@ -9,7 +9,7 @@ import {
 } from "@typegoose/typegoose";
 import argon2d from "argon2";
 
-@index({ email: 1 })
+@index({ id_: 1 })
 @modelOptions({
   schemaOptions: {
     timestamps: true,

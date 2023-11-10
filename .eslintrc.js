@@ -25,5 +25,14 @@ module.exports =
     'no-console': 0,
     'no-var': 'error',
     'prefer-const': 'error',
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "extendDefaults": true,
+        "types": {
+          "{}": false,
+        }
+      }
+    ]
   }
 };
