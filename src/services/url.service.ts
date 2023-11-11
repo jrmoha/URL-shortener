@@ -1,10 +1,10 @@
-import UrlModel, { URL_ } from "../models/url.model";
+import UrlModel, { URL } from "../models/url.model";
 
 export const createURL = function (
   shortUrl: string,
   longUrl: string,
   user: string,
-): Promise<URL_> {
+): Promise<URL> {
   return UrlModel.create({
     shortUrl,
     longUrl,
@@ -14,6 +14,6 @@ export const createURL = function (
 
 export const getOriginalURL = function (
   SHORT_URL: string,
-): Promise<URL_ | null> {
+): Promise<URL | null> {
   return UrlModel.findOne({ shortUrl: SHORT_URL });
 };

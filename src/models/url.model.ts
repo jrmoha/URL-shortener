@@ -13,7 +13,7 @@ import { User } from "./user.model";
   schemaOptions: { timestamps: true },
   options: { allowMixed: Severity.ALLOW },
 })
-export class URL_ {
+export class URL {
   @prop({
     required: true,
     maxlength: config.get<number>("SHORT_URL_MAX_LENGTH"),
@@ -29,6 +29,6 @@ export class URL_ {
   user: string;
 }
 
-const UrlModel = getModelForClass(URL_);
+const UrlModel = getModelForClass(URL);
 
 export default UrlModel;

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { createUser, findUser } from "../services/user.service";
 import { DocumentType } from "@typegoose/typegoose";
+import { StatusCodes } from "http-status-codes";
+import { createUser, findUser } from "../services/user.service";
 import { User } from "../models/user.model";
 import { CreateUserInput, VerifyUserInput } from "../schema/user.schema";
-import { StatusCodes } from "http-status-codes";
 
 export const createUserHandler = async function (
   req: Request<{}, {}, CreateUserInput>,

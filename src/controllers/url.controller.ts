@@ -5,7 +5,7 @@ import config from "config";
 import { CreateURLInput, GetURLInput } from "./../schema/url.schema";
 import { findUser } from "../services/user.service";
 import { createURL, getOriginalURL } from "../services/url.service";
-import { URL_ } from "../models/url.model";
+import { URL } from "../models/url.model";
 
 export const createURLHandler = async function (
   req: Request<{}, {}, CreateURLInput>,
@@ -30,7 +30,7 @@ export const createURLHandler = async function (
       .slice(0, config.get<number>("SHORT_URL_MAX_LENGTH"));
 
     //insert short_url and return it with status=201
-    const created_url: URL_ = await createURL(short_url, URL, API_KEY);
+    const created_url: URL = await createURL(short_url, URL, API_KEY);
 
     return res
       .status(StatusCodes.CREATED)
@@ -47,7 +47,7 @@ export const redirectURLHandler = async function (
 ) {
   const { SHORT_URL } = req.params;
   try {
-    const URL: URL_ | null = await getOriginalURL(SHORT_URL);
+    const URL: URL | null = await getOriginalURL(SHORT_URL);
     if (!URL)
       return res.status(StatusCodes.NOT_FOUND).send("This URL is Invalid");
 

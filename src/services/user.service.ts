@@ -5,7 +5,7 @@ export const createUser = function (user: Partial<User>): Promise<User> {
 };
 
 export const findUser = function (
-  key:"_id" | "email",
+  key: "_id" | "email",
   value: string,
 ): Promise<User | null> {
   return UserModel.findOne({ [key]: value });

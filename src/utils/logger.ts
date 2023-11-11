@@ -1,6 +1,6 @@
 import pino from "pino";
 import fs from "fs";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import dayjs from "dayjs";
 import config from "config";
 
@@ -25,10 +25,10 @@ if (!fs.existsSync(log_dir)) {
 const log_path = `${log_dir}/access_${dayjs().format("YYYY-MM-DD")}.log`;
 const logFileStream = fs.createWriteStream(log_path, { flags: "a" });
 
-export const logRequest = (req: Request, res: Response) => {
-  const { method, url, headers, params, query } = req;
+export const logRequest = (req: Request, res: Response,next:NextFunction) => {
+  const { method, url, headers, params, query, body } = req;
   const { statusCode } = res;
-  logger.info({ method, url, statusCode });
+  logger.info({ method, url, statusCode, body });
 
   const logEntry = `${new Date().toISOString()} [${method}] ${url} - ${statusCode}\n`;
   logFileStream.write(logEntry);
@@ -40,9 +40,11 @@ export const logRequest = (req: Request, res: Response) => {
     headers,
     query,
     params,
+    body,
     statusCode,
   };
-  logFileStream.write(JSON.stringify(logDetails, null, 2) + "\n");
+  logFileStream.write(JSON.stringify(logDetails, null, 2) + "\n", "utf8", () => {});
+  next();
 };
 export const logError = (error: Error) => {
   logger.error(error.message);
