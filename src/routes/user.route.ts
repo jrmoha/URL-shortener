@@ -11,6 +11,6 @@ router.post(
   createUserHandler,
 );
 
-router.post("/app/users/api/login",validateInput(verfiyUserSchema), getAPIKEY);
+router.post("/app/users/api/login", validateInput(verfiyUserSchema), getAPIKEY);
 
 export default router;

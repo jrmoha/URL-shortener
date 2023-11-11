@@ -9,7 +9,7 @@ import {
 } from "@typegoose/typegoose";
 import argon2d from "argon2";
 
-@index({ id_: 1 })
+@index({ email: 1 })
 @modelOptions({
   schemaOptions: {
     timestamps: true,
@@ -25,7 +25,7 @@ import argon2d from "argon2";
   return;
 })
 export class User {
-  @prop({ required: true, unique: true })
+  @prop({ required: true, unique: true, lowercase: true })
   public email: string;
 
   @prop({ required: true })
