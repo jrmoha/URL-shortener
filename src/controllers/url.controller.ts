@@ -23,18 +23,17 @@ export const createURLHandler = async function (
         .send("This API_KEY Doesn't Exist");
 
     //IF true hash the url and assign it
-    const short_url = crypto
-      .createHash("md5")
+    const hash = crypto
+      .createHash("sha256")
       .update(URL)
-      .digest("base64url")
+      .digest("hex")
       .slice(0, config.get<number>("SHORT_URL_MAX_LENGTH"));
 
-    //insert short_url and return it with status=201
-    const created_url: URL = await createURL(short_url, URL, API_KEY);
+    //create a URL
+    const newURL = await createURL(hash, URL, API_KEY);
 
-    return res
-      .status(StatusCodes.CREATED)
-      .json({ shortUrl: created_url.shortUrl });
+    //return the URL
+    res.status(StatusCodes.CREATED).json({ shortUrl: newURL.shortUrl });
   } catch (e) {
     next(e);
   }

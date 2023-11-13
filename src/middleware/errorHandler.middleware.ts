@@ -15,9 +15,9 @@ const errorHandler = function (
   }
 
   if (err instanceof ZodError) {
-    return res.status(StatusCodes.NOT_ACCEPTABLE).json(err.errors[0].message);
+    return res.status(parseInt(err.errors[0].code)).json(err.errors[0].message);
   }
-  
+
   return res.status(StatusCodes.NOT_ACCEPTABLE).json(err.message);
 };
 
