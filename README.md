@@ -6,6 +6,10 @@ A URL shortener service creates a short url/aliases/tiny url against a long url.
 Tiny url are exceedingly handy to share through sms/tweets (where there is limit to number of characters that can be messaged/tweeted) and also when they are printed in books/magazines etc.(Less character implies less printing cost). In addition, it is easy and less error prone to type a short url when compared to its longer version.
 
 
+## Tech Stack
+
+**Server:** Node, Express, MongoDB, Redis
+
 ## Design Issues
 
 ![alt text](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*mParFcnj7wO_-Srp3IalKg.png)
@@ -93,10 +97,10 @@ There is only single database which might not be sufficient for 60 TB of storage
     │   ├── services/
     │   │   ├── url.service.ts
     │   │   └── user.service.ts
-    │   └── utils/
-    │       ├── connect.ts
-    │       └── logger.ts
-    |   ├── server.ts
+    │   ├── utils/
+    │   │   ├── connect.ts
+    │   │    └── logger.ts
+    │   └── server.ts
     ├── .env.example
     ├── .eslintrc.js
     ├── .prettierrc.json
