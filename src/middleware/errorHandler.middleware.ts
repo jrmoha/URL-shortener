@@ -11,14 +11,20 @@ const errorHandler = function (
   _next: NextFunction,
 ) {
   if (err instanceof APIError) {
-    return res.status(err.statusCode).json(err.message);
+    return res
+      .status(err.statusCode)
+      .json({ success: false, error: err.message });
   }
 
   if (err instanceof ZodError) {
-    return res.status(parseInt(err.errors[0].code)).json(err.errors[0].message);
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ success: false, error: err.errors[0].message });
   }
 
-  return res.status(StatusCodes.NOT_ACCEPTABLE).json(err.message);
+  return res
+    .status(StatusCodes.NOT_ACCEPTABLE)
+    .json({ success: false, error: err.message });
 };
 
 export default errorHandler;

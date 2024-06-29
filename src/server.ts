@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { Application,  } from "express";
+import express, { Application } from "express";
 import config from "config";
 import connect from "./utils/connect";
 import { logInfo } from "./utils/logger";

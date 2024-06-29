@@ -4,37 +4,41 @@ import { StatusCodes } from "http-status-codes";
 import { createUser, findUser } from "../services/user.service";
 import { User } from "../models/user.model";
 import { CreateUserInput, VerifyUserInput } from "../schema/user.schema";
+import { async_ } from "../middleware/async.handler";
+import APIError from "../errors/APIError";
 
-export const createUserHandler = async function (
+export const createUserHandler = async_(async function (
   req: Request<{}, {}, CreateUserInput>,
   res: Response,
   next: NextFunction,
 ) {
-  const body = req.body;
-  try {
-    const user = await createUser(body);
-    res.status(StatusCodes.CREATED).send(user);
-  } catch (e) {
-    next(e);
-  }
-};
+  const user_exists = await findUser("email", req.body.email);
 
-export const getAPIKEY = async function (
+  if (user_exists)
+    throw new APIError("User Already Exists", StatusCodes.CONFLICT);
+
+  const user = await createUser(req.body);
+
+  return user
+    ? res.status(StatusCodes.CREATED).send({ success: true, API_KEY: user._id })
+    : next(new APIError("User Not Created", StatusCodes.INTERNAL_SERVER_ERROR));
+});
+
+export const getAPIKEY = async_(async function (
   req: Request<{}, {}, VerifyUserInput>,
   res: Response,
   next: NextFunction,
 ) {
   const { email, password } = req.body;
 
-  try {
-    const user = (await findUser("email", email)) as DocumentType<User>;
-    if (!user) return res.status(404).send("User Doesn't Exists");
+  const user = (await findUser("email", email)) as DocumentType<User>;
+  if (!user) throw new APIError("User Not Found", StatusCodes.NOT_FOUND);
 
-    const password_valid = await user.validate_password(password);
-    if (!password_valid) return res.status(401).send("Password is incorrect");
+  const password_valid = await user.validate_password(password);
+  if (!password_valid)
+    throw new APIError("Invalid Password", StatusCodes.UNAUTHORIZED);
 
-    res.status(StatusCodes.ACCEPTED).json({ API_KEY: user._id });
-  } catch (e) {
-    next(e);
-  }
-};
+  return res
+    .status(StatusCodes.ACCEPTED)
+    .json({ success: true, API_KEY: user._id });
+});
