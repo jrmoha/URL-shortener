@@ -6,6 +6,7 @@ import {
 import validateInput from "../middleware/validateInput.middleware";
 import { createURLSchema, getURLSchema } from "../schema/url.schema";
 import { logRequest } from "../utils/logger";
+import { cache } from "../middleware/cache.middleware";
 
 const router = Router();
 
@@ -20,6 +21,7 @@ router.get(
   "/:SHORT_URL",
   validateInput(getURLSchema),
   logRequest,
+  cache("SHORT_URL"),
   redirectURLHandler,
 );
 

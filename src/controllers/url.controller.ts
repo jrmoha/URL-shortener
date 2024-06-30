@@ -8,6 +8,7 @@ import { findUser } from "../services/user.service";
 import { createURL, getOriginalURL } from "../services/url.service";
 import { URL } from "../models/url.model";
 import APIError from "../errors/APIError";
+import { RedisService } from "../cache";
 
 export const createURLHandler = async_(async function (
   req: Request<{}, {}, CreateURLInput>,
@@ -32,9 +33,11 @@ export const createURLHandler = async_(async function (
   const newURL = await createURL(hash, URL, API_KEY);
 
   //return the URL
-  return res
-    .status(StatusCodes.CREATED)
-    .json({ success: true, shortUrl: newURL.shortUrl });
+  return newURL
+    ? res
+        .status(StatusCodes.CREATED)
+        .json({ success: true, shortUrl: newURL.shortUrl })
+    : next(new APIError("URL Not Created", StatusCodes.INTERNAL_SERVER_ERROR));
 });
 
 export const redirectURLHandler = async_(async function (
@@ -45,10 +48,13 @@ export const redirectURLHandler = async_(async function (
   const { SHORT_URL } = req.params;
 
   const URL: URL | null = await getOriginalURL(SHORT_URL);
-  if (!URL)
-    return res.status(StatusCodes.NOT_FOUND).send("This URL is Invalid");
+
+  if (!URL) throw new APIError("URL Not Found", StatusCodes.NOT_FOUND);
 
   const ORIGINAL_URL = URL.longUrl;
+
+  const redis_client = RedisService.getInstance().Client;
+  await redis_client.set(SHORT_URL, JSON.stringify(URL));
 
   return res.status(StatusCodes.PERMANENT_REDIRECT).redirect(ORIGINAL_URL);
 });

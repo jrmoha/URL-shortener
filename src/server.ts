@@ -5,6 +5,7 @@ import connect from "./utils/connect";
 import { logInfo } from "./utils/logger";
 import routes from "./routes";
 import errorHandler from "./middleware/errorHandler.middleware";
+import { RedisService } from "./cache";
 
 const app: Application = express();
 
@@ -20,4 +21,5 @@ app.listen(PORT, () => {
   logInfo(`Server is listening on port ${PORT}`);
 
   connect(database_uri);
+  RedisService.getInstance().connect();
 });
